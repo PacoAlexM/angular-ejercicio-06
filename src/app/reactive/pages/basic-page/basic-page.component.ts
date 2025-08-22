@@ -1,6 +1,7 @@
 import { JsonPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormUtils } from '../../../utils/form-utils';
 
 @Component({
     selector: 'basic-page',
@@ -15,6 +16,7 @@ export class BasicPageComponent {
     // });
 
     formBuilder = inject(FormBuilder);
+    formUtils = FormUtils;
 
     myForm: FormGroup = this.formBuilder.group({
         name: ['', /* Validadores sincronos */ [Validators.required, Validators.minLength(3)] /*, Validadores asincronos */],
@@ -22,37 +24,39 @@ export class BasicPageComponent {
         inStorage: [0, [Validators.required, Validators.min(0)]],
     });
 
-    isValidField(field: string): boolean | null {
-        return (this.myForm.controls[field].errors && this.myForm.controls[field].touched);
-    }
+    // isValidField(field: string): boolean | null {
+    //     return (this.myForm.controls[field].errors && this.myForm.controls[field].touched);
+    // }
 
-    getFieldError(field: string): string | null {
-        if (!this.myForm.controls[field]) return null;
-
-        const errors = this.myForm.controls[field].errors ?? {};
-
-        for (const key of Object.keys(errors)) {
-            switch (key) {
-                case 'required':
-                    return 'Este campo es requerido';
-                case 'minlength':
-                    return `Minimo de ${errors['minlength'].requiredLength} caracteres`;
-                case 'min':
-                    return `Valor minimo de ${errors['min'].min}`;
-            }
-        }
-
-        return null;
-    }
+    // getFieldError(field: string): string | null {
+    //     if (!this.myForm.controls[field]) return null;
+    // 
+    //     const errors = this.myForm.controls[field].errors ?? {};
+    // 
+    //     for (const key of Object.keys(errors)) {
+    //         switch (key) {
+    //             case 'required':
+    //                 return 'Este campo es requerido';
+    //             case 'minlength':
+    //                 return `Minimo de ${errors['minlength'].requiredLength} caracteres`;
+    //             case 'min':
+    //                 return `Valor minimo de ${errors['min'].min}`;
+    //         }
+    //     }
+    // 
+    //     return null;
+    // }
 
     onSubmit() {
         if (this.myForm.invalid) {
             this.myForm.markAllAsTouched();
+            return;
         }
 
         console.log(this.myForm.value);
 
         this.myForm.reset({
+            name: '',
             price: 0,
             inStorage: 0,
         });
