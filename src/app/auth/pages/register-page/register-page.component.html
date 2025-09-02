@@ -9,7 +9,7 @@
             <div class="row mb-3">
                 <label class="col-sm-3 col-form-label">Nombre y apellido</label>
                 <div class="col-sm-9">
-                    <input type="text" class="form-control" placeholder="Nombre del usuario" formControlName="name" />
+                    <input type="text" class="form-control" placeholder="Nombre y apellido" formControlName="name" />
                     @if (formUtils.isValidField(myForm, 'name')) {
                         <span class="form-text text-danger">{{ formUtils.getFieldError(myForm, 'name') }}</span>
                     }
@@ -68,11 +68,13 @@
     </div>
 </div>
 
-<h2>Form Valid: </h2>
-<pre>{{ myForm.valid | json }}</pre>
+<h2>Form Valid: {{ myForm.valid }}</h2>
 
-<h2>Form Status: </h2>
-<h2>Form Pending: </h2>
+<h2>Form Status: {{ myForm.status }}</h2>
+<h2>Form Pending: {{ myForm.pending }}</h2>
+
+<h2>Value</h2>
+<pre>{{ myForm.value | json }}</pre>
 
 <h2>Form errors</h2>
 <pre>{{ myForm.errors | json }}</pre>

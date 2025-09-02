@@ -1,6 +1,10 @@
-import { FormArray, FormGroup, ValidationErrors } from '@angular/forms';
+import { AbstractControl, FormArray, FormGroup, ValidationErrors } from '@angular/forms';
 
 export class FormUtils {
+    static namePattern = '^([a-zA-Z]+) ([a-zA-Z]+)$';
+    static emailPattern = '^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$';
+    static notOnlySpacesPattern = '^[a-zA-Z0-9]+$';
+
     static getErrorsInControl(errors: ValidationErrors) {
         for (const key of Object.keys(errors)) {
             switch (key) {
@@ -12,6 +16,17 @@ export class FormUtils {
                     return `Valor minimo de ${errors['min'].min}`;
                 case 'email':
                     return 'Debe ingresar un correo electronico valido';
+                case 'pattern':
+                    if (errors['pattern'].requiredPattern === FormUtils.emailPattern) {
+                        return 'El correo electronico no es valido';
+                    } else if (errors['pattern'].requiredPattern === FormUtils.namePattern) {
+                        return 'Debe capturar el nombre y apellido';
+                    } else if (errors['pattern'].requiredPattern === FormUtils.notOnlySpacesPattern) {
+                        return 'No admite solo espacios en blanco';
+                    }
+                    return 'Combinacion de caracteres no permitida';
+                default:
+                    return `Error no controlado (${key})`;
             }
         }
 
@@ -40,5 +55,14 @@ export class FormUtils {
         const errors = form.controls[index].errors ?? {};
 
         return FormUtils.getErrorsInControl(errors);
+    }
+
+    static areFieldsEquals(fieldMaster: string, field: string) {
+        return (formGroup: AbstractControl) => {
+            const fieldMasterValue = formGroup.get(fieldMaster)?.value;
+            const fieldValue = formGroup.get(field)?.value;
+
+            return fieldMasterValue === fieldValue ? null : { passwordNotEqual: true };
+        }
     }
 }
