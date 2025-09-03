@@ -1,5 +1,13 @@
 import { AbstractControl, FormArray, FormGroup, ValidationErrors } from '@angular/forms';
 
+async function sleep () {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            resolve(true);
+        }, 3000)
+    });
+}
+
 export class FormUtils {
     static namePattern = '^([a-zA-Z]+) ([a-zA-Z]+)$';
     static emailPattern = '^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$';
@@ -25,6 +33,10 @@ export class FormUtils {
                         return 'No admite solo espacios en blanco';
                     }
                     return 'Combinacion de caracteres no permitida';
+                case 'emailInUse':
+                    return 'Este correo electronico ya esta en uso';
+                case 'forbiddenUserName':
+                    return 'Este nombre de usuario no esta permitido';
                 default:
                     return `Error no controlado (${key})`;
             }
@@ -64,5 +76,31 @@ export class FormUtils {
 
             return fieldMasterValue === fieldValue ? null : { passwordNotEqual: true };
         }
+    }
+
+    static async checkingServerResponse(control: AbstractControl): Promise<ValidationErrors | null> {
+        await sleep();
+
+        const formValue = control.value;
+
+        if (formValue === 'hola@mundo.com') {
+            return {
+                emailInUse: true,
+            }
+        }
+
+        return null;
+    }
+
+    static notStrider(control: AbstractControl): ValidationErrors | null {
+        const formValue = control.value;
+
+        if (formValue === 'strider') {
+            return {
+                forbiddenUserName: true,
+            }
+        }
+
+        return null;
     }
 }
